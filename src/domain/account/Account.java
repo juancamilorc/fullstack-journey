@@ -37,7 +37,7 @@ public class Account {
         validateAmount(amount);
 
         balance += amount;
-        movements.add(new Movement(Instant.now(), MovementType.DEPOSITO, amount, balance));
+        recordMovement(MovementType.DEPOSITO, amount);
     }
 
     public void withdraw(long amount) {
@@ -47,10 +47,14 @@ public class Account {
         }
 
         balance -= amount;
-        movements.add(new Movement(Instant.now(), MovementType.RETIRO, amount, balance));
+        recordMovement(MovementType.RETIRO, amount);
     }
 
     private void validateAmount(long amount) {
         if (amount <= 0) throw new IllegalArgumentException("amount must be > 0");
+    }
+
+    private void recordMovement(MovementType type, long amount) {
+        movements.add(new Movement(Instant.now(), type, amount, balance));
     }
 }
