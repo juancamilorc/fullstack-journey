@@ -18,7 +18,8 @@ public class Account {
     private final List<Movement> movements = new ArrayList<>();
 
     public Account(String number, AccountType type, Client owner) {
-        this.number = Objects.requireNonNull(number, "number");
+        this.number = Objects.requireNonNull(number, "number").trim();
+        if (this.number.isEmpty()) throw new IllegalArgumentException("number must not be blank");
         this.type = Objects.requireNonNull(type, "type");
         this.owner = Objects.requireNonNull(owner, "owner");
         this.balance = 0L;
@@ -43,7 +44,7 @@ public class Account {
     public void withdraw(long amount) {
         validateAmount(amount);
         if (amount > balance) {
-            throw new IllegalStateException("insufficient funds");
+            throw new IllegalStateException("insufficient funds: balance=" + balance + ", amount=" + amount);
         }
 
         balance -= amount;
@@ -56,5 +57,10 @@ public class Account {
 
     private void recordMovement(MovementType type, long amount) {
         movements.add(new Movement(Instant.now(), type, amount, balance));
+    }
+
+    public Movement getLastMovement() {
+        if (movements.isEmpty()) return null;
+        return movements.get(movements.size() - 1);
     }
 }

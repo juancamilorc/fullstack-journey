@@ -15,9 +15,9 @@ public class Client {
     private final List<Account> accounts = new ArrayList<>();
 
     public Client(String id, String name, String document) {
-        this.id = Objects.requireNonNull(id, "id");
-        this.name = Objects.requireNonNull(name, "name");
-        this.document = Objects.requireNonNull(document, "document");
+        this.id = validateRequired(id, "id");
+        this.name = validateRequired(name, "name");
+        this.document = validateRequired(document, "document");
     }
 
     public String getId() { return id; }
@@ -30,5 +30,15 @@ public class Client {
 
     public void addAccount(Account account) {
         accounts.add(Objects.requireNonNull(account, "account"));
+    }
+
+    // Validación centralizada
+    private static String validateRequired(String value, String fieldName) {
+        Objects.requireNonNull(value, fieldName);
+        String trimmed = value.trim();
+        if (trimmed.isEmpty()) {
+            throw new IllegalArgumentException(fieldName + " must not be blank");
+        }
+        return trimmed;
     }
 }
