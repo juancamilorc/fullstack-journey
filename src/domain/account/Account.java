@@ -1,6 +1,8 @@
 package domain.account;
 
 import domain.client.Client;
+import domain.exception.InsufficientFundsException;
+import domain.money.Money;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -14,7 +16,7 @@ public class Account {
     private final AccountType type;
     private final Client owner;
 
-    private long balance; // centavos
+    private Money balance;// centavos
     private final List<Movement> movements = new ArrayList<>();
 
     public Account(String number, AccountType type, Client owner) {
@@ -22,13 +24,13 @@ public class Account {
         if (this.number.isEmpty()) throw new IllegalArgumentException("number must not be blank");
         this.type = Objects.requireNonNull(type, "type");
         this.owner = Objects.requireNonNull(owner, "owner");
-        this.balance = 0L;
+        this.balance = Money.of(0);
     }
 
     public String getNumber() { return number; }
     public AccountType getType() { return type; }
     public Client getOwner() { return owner; }
-    public long getBalance() { return balance; }
+    public Money getBalance() { return balance; }
 
     public List<Movement> getMovements() {
         return Collections.unmodifiableList(movements);
@@ -37,17 +39,18 @@ public class Account {
     public void deposit(long amount) {
         validateAmount(amount);
 
-        balance += amount;
+        balance = balance.add(Money.of(amount));
         recordMovement(MovementType.DEPOSITO, amount);
     }
 
     public void withdraw(long amount) {
-        validateAmount(amount);
-        if (amount > balance) {
-            throw new IllegalStateException("insufficient funds: balance=" + balance + ", amount=" + amount);
+        Money withdrawal = Money.of(amount);
+
+        if (withdrawal.getAmount() > balance.getAmount()) {
+            throw new InsufficientFundsException(balance.getAmount(), amount);
         }
 
-        balance -= amount;
+        balance = balance.subtract(withdrawal);
         recordMovement(MovementType.RETIRO, amount);
     }
 
@@ -56,11 +59,14 @@ public class Account {
     }
 
     private void recordMovement(MovementType type, long amount) {
-        movements.add(new Movement(Instant.now(), type, amount, balance));
+        movements.add(new Movement(Instant.now(), type, amount, balance.getAmount()));
     }
 
     public Movement getLastMovement() {
         if (movements.isEmpty()) return null;
         return movements.get(movements.size() - 1);
+    }
+    public long getBalanceAmount() {
+        return balance.getAmount();
     }
 }

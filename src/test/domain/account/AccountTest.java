@@ -1,6 +1,7 @@
 package domain.account;
 
 import domain.client.Client;
+import domain.exception.InsufficientFundsException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,7 @@ class AccountTest {
 
         account.deposit(100);
 
-        assertEquals(100, account.getBalance());
+        assertEquals(100, account.getBalanceAmount());
     }
 
     @Test
@@ -25,7 +26,7 @@ class AccountTest {
         account.deposit(200);
         account.withdraw(50);
 
-        assertEquals(150, account.getBalance());
+        assertEquals(150, account.getBalanceAmount());
         assertEquals(2, account.getMovements().size());
         assertEquals(MovementType.RETIRO, account.getMovements().get(1).getType());
         assertEquals(150, account.getMovements().get(1).getResultingBalance());
@@ -36,13 +37,13 @@ class AccountTest {
         Client client = new Client("1", "Juan", "123");
         Account account = new Account("ACC-1", AccountType.AHORROS, client);
 
-        IllegalStateException ex = assertThrows(
-                IllegalStateException.class,
+        InsufficientFundsException ex = assertThrows(
+                InsufficientFundsException.class,
                 () -> account.withdraw(10)
         );
 
         assertTrue(ex.getMessage().startsWith("insufficient funds"));
-        assertEquals(0, account.getBalance());
+        assertEquals(0, account.getBalanceAmount());
         assertEquals(0, account.getMovements().size());
     }
 
@@ -54,7 +55,7 @@ class AccountTest {
         assertThrows(IllegalArgumentException.class, () -> account.deposit(0));
         assertThrows(IllegalArgumentException.class, () -> account.deposit(-1));
 
-        assertEquals(0, account.getBalance());
+        assertEquals(0, account.getBalanceAmount());
         assertEquals(0, account.getMovements().size());
     }
 }
