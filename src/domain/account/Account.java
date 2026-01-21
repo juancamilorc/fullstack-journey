@@ -30,7 +30,9 @@ public class Account {
     public String getNumber() { return number; }
     public AccountType getType() { return type; }
     public Client getOwner() { return owner; }
-    public Money getBalance() { return balance; }
+    public Money getBalance() { return balance; }          // dominio
+    public long getBalanceAmount() { return balance.getAmount(); } // tests/UI
+
 
     public List<Movement> getMovements() {
         return Collections.unmodifiableList(movements);
@@ -39,13 +41,15 @@ public class Account {
     public void deposit(long amount) {
         validateAmount(amount);
 
-        balance = balance.add(Money.of(amount));
+        Money deposit = Money.of(amount);
+        balance = balance.add(deposit);
         recordMovement(MovementType.DEPOSITO, amount);
     }
 
     public void withdraw(long amount) {
-        Money withdrawal = Money.of(amount);
+        validateAmount(amount);
 
+        Money withdrawal = Money.of(amount);
         if (withdrawal.getAmount() > balance.getAmount()) {
             throw new InsufficientFundsException(balance.getAmount(), amount);
         }
@@ -65,8 +69,5 @@ public class Account {
     public Movement getLastMovement() {
         if (movements.isEmpty()) return null;
         return movements.get(movements.size() - 1);
-    }
-    public long getBalanceAmount() {
-        return balance.getAmount();
     }
 }
