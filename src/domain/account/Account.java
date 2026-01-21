@@ -50,7 +50,7 @@ public class Account {
         validateAmount(amount);
 
         Money withdrawal = Money.of(amount);
-        if (withdrawal.getAmount() > balance.getAmount()) {
+        if (withdrawal.isGreaterThan(balance)) {
             throw new InsufficientFundsException(balance.getAmount(), amount);
         }
 

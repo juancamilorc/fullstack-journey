@@ -33,4 +33,9 @@ public final class Money {
         }
         return new Money(this.amount - other.amount);
     }
+
+    public boolean isGreaterThan(Money other) {
+        Objects.requireNonNull(other, "other");
+        return this.amount > other.amount;
+    }
 }
