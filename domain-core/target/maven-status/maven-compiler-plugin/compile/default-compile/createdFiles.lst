@@ -1,0 +1,7 @@
+domain/exception/InsufficientFundsException.class
+domain/account/AccountType.class
+domain/account/MovementType.class
+domain/account/Movement.class
+domain/client/Client.class
+domain/account/Account.class
+domain/money/Money.class

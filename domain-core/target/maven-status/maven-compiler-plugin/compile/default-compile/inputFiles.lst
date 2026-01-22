@@ -1,0 +1,7 @@
+/Users/juanramirez/IdeaProjects/fullstack-journey/domain-core/src/main/java/domain/account/Account.java
+/Users/juanramirez/IdeaProjects/fullstack-journey/domain-core/src/main/java/domain/account/AccountType.java
+/Users/juanramirez/IdeaProjects/fullstack-journey/domain-core/src/main/java/domain/account/Movement.java
+/Users/juanramirez/IdeaProjects/fullstack-journey/domain-core/src/main/java/domain/account/MovementType.java
+/Users/juanramirez/IdeaProjects/fullstack-journey/domain-core/src/main/java/domain/client/Client.java
+/Users/juanramirez/IdeaProjects/fullstack-journey/domain-core/src/main/java/domain/exception/InsufficientFundsException.java
+/Users/juanramirez/IdeaProjects/fullstack-journey/domain-core/src/main/java/domain/money/Money.java
