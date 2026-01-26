@@ -88,4 +88,24 @@ public class ClientController {
                 )
         );
     }
+
+    @GetMapping("/{clientId}/accounts")
+    public ResponseEntity<?> getAccounts(@PathVariable String clientId) {
+
+        Client client = store.findById(clientId);
+        if (client == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var accounts = client.getAccounts().stream()
+                .map(acc -> new AccountResponse(
+                        acc.getNumber(),
+                        acc.getType().name(),
+                        acc.getBalanceAmount(),
+                        client.getId()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(accounts);
+    }
 }
