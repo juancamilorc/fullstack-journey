@@ -1,6 +1,7 @@
 package com.juancamilo.bankapi.api;
 
 import com.juancamilo.bankapi.api.dto.AccountResponse;
+import com.juancamilo.bankapi.api.dto.ClientResponse;
 import com.juancamilo.bankapi.api.dto.CreateClientRequest;
 import com.juancamilo.bankapi.storage.InMemoryClientStore;
 import domain.client.Client;
@@ -25,7 +26,7 @@ public class ClientController {
     }
 
     @PostMapping
-    public ResponseEntity<Client> create(@RequestBody CreateClientRequest req) {
+    public ResponseEntity<ClientResponse> create(@RequestBody CreateClientRequest req) {
 
         if (store.existsById(req.id())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build(); // 409
@@ -34,19 +35,26 @@ public class ClientController {
         Client client = new Client(req.id(), req.name(), req.document());
         store.save(client);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(client); // 201
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ClientResponse(client.getId(), client.getName(), client.getDocument())
+        );
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Client> getById(@PathVariable String id) {
+    public ResponseEntity<ClientResponse> getById(@PathVariable String id) {
 
         Client client = store.findById(id);
-
         if (client == null) {
-            return ResponseEntity.notFound().build(); // 404
+            return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(client); // 200
+        return ResponseEntity.ok(
+                new ClientResponse(
+                        client.getId(),
+                        client.getName(),
+                        client.getDocument()
+                )
+        );
     }
 
     @PostMapping("/{clientId}/accounts")
