@@ -45,19 +45,11 @@ public class AccountController {
     public ResponseEntity<?> withdraw(@PathVariable String number,
                                       @RequestBody MoneyRequest req) {
 
-        if (req == null || req.amount() <= 0) {
-            return ResponseEntity.badRequest().body("amount must be > 0");
-        }
-
         Account account = accounts.findByNumber(number);
         if (account == null) return ResponseEntity.notFound().build();
 
-        try {
-            account.withdraw(req.amount());
-            return ResponseEntity.ok(toResponse(account));
-        } catch (InsufficientFundsException e) {
-            return ResponseEntity.status(409).body(e.getMessage());
-        }
+        account.withdraw(req.amount()); // si falla, el handler lo convierte en 409
+        return ResponseEntity.ok(toResponse(account));
     }
 
     @GetMapping("/{number}/movements")
