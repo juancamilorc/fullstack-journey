@@ -3,15 +3,13 @@ package com.juancamilo.bankapi.api;
 import com.juancamilo.bankapi.api.dto.AccountResponse;
 import com.juancamilo.bankapi.api.dto.ClientResponse;
 import com.juancamilo.bankapi.api.dto.CreateClientRequest;
-import com.juancamilo.bankapi.storage.InMemoryClientStore;
-import com.juancamilo.bankapi.storage.jpa.JpaClientStore;
+import com.juancamilo.bankapi.storage.jpa.*;
 import domain.client.Client;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.juancamilo.bankapi.storage.InMemoryAccountStore;
 import com.juancamilo.bankapi.api.dto.CreateAccountRequest;
-import domain.account.Account;
 import domain.account.AccountType;
 
 @RestController
@@ -19,11 +17,14 @@ import domain.account.AccountType;
 public class ClientController {
 
     private final JpaClientStore store;
-    private final InMemoryAccountStore accountStore;
 
-    public ClientController(JpaClientStore store, InMemoryAccountStore accountStore) {
+    private final ClientRepository clientRepo;
+    private final AccountRepository accountRepo;
+
+    public ClientController(JpaClientStore store, InMemoryAccountStore accountStore, ClientRepository clientStore, AccountRepository accountRepository) {
         this.store = store;
-        this.accountStore = accountStore;
+        this.clientRepo = clientStore;
+        this.accountRepo = accountRepository;
     }
 
     @PostMapping
@@ -62,30 +63,35 @@ public class ClientController {
     public ResponseEntity<?> createAccount(@PathVariable String clientId,
                                            @RequestBody CreateAccountRequest req) {
 
-        Client client = store.findById(clientId);
-        if (client == null) return ResponseEntity.notFound().build();
+        ClientEntity clientEntity = clientRepo.findById(clientId).orElse(null);
+        if (clientEntity == null) return ResponseEntity.notFound().build();
 
-        if (accountStore.existsByNumber(req.number())) {
+        if (accountRepo.existsById(req.number())) {
             return ResponseEntity.status(409).body("account number already exists");
         }
 
         AccountType type;
         try {
-            type = AccountType.valueOf(req.type()); // espera "AHORROS" o "CORRIENTE"
+            type = AccountType.valueOf(req.type());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("invalid account type");
         }
 
-        Account account = new Account(req.number(), type, client);
-        client.addAccount(account);
-        accountStore.save(account);
+        AccountEntity entity = new AccountEntity(
+                req.number(),
+                type.name(),
+                0L,
+                clientEntity
+        );
+
+        accountRepo.save(entity);
 
         return ResponseEntity.status(201).body(
                 new AccountResponse(
-                        account.getNumber(),
-                        account.getType().name(),
-                        account.getBalanceAmount(),
-                        client.getId()
+                        entity.getNumber(),
+                        entity.getType(),
+                        entity.getBalanceAmount(),
+                        clientEntity.getId()
                 )
         );
     }
@@ -93,20 +99,21 @@ public class ClientController {
     @GetMapping("/{clientId}/accounts")
     public ResponseEntity<?> getAccounts(@PathVariable String clientId) {
 
-        Client client = store.findById(clientId);
-        if (client == null) {
+        if (!clientRepo.existsById(clientId)) {
             return ResponseEntity.notFound().build();
         }
 
-        var accounts = client.getAccounts().stream()
-                .map(acc -> new AccountResponse(
-                        acc.getNumber(),
-                        acc.getType().name(),
-                        acc.getBalanceAmount(),
-                        client.getId()
+        var accounts = accountRepo.findByClient_Id(clientId);
+
+        var response = accounts.stream()
+                .map(a -> new AccountResponse(
+                        a.getNumber(),
+                        a.getType(),
+                        a.getBalanceAmount(),
+                        clientId
                 ))
                 .toList();
 
-        return ResponseEntity.ok(accounts);
+        return ResponseEntity.ok(response);
     }
 }

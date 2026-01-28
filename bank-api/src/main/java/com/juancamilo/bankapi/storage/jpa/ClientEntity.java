@@ -1,5 +1,10 @@
 package com.juancamilo.bankapi.storage.jpa;
 
+import java.util.ArrayList;
+import java.util.List;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -19,7 +24,9 @@ public class ClientEntity {
     @Column(nullable = false, length = 50)
     private String document;
 
-    // JPA necesita constructor vacío
+    @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AccountEntity> accounts = new ArrayList<>();
+
     protected ClientEntity() {}
 
     public ClientEntity(String id, String name, String document) {
@@ -31,4 +38,5 @@ public class ClientEntity {
     public String getId() { return id; }
     public String getName() { return name; }
     public String getDocument() { return document; }
+    public List<AccountEntity> getAccounts() { return accounts; }
 }
