@@ -4,6 +4,7 @@ import com.juancamilo.bankapi.api.dto.AccountResponse;
 import com.juancamilo.bankapi.api.dto.ClientResponse;
 import com.juancamilo.bankapi.api.dto.CreateClientRequest;
 import com.juancamilo.bankapi.storage.InMemoryClientStore;
+import com.juancamilo.bankapi.storage.jpa.JpaClientStore;
 import domain.client.Client;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,10 @@ import domain.account.AccountType;
 @RequestMapping("/api/v1/clients")
 public class ClientController {
 
-    private final InMemoryClientStore store;
+    private final JpaClientStore store;
     private final InMemoryAccountStore accountStore;
 
-    public ClientController(InMemoryClientStore store, InMemoryAccountStore accountStore) {
+    public ClientController(JpaClientStore store, InMemoryAccountStore accountStore) {
         this.store = store;
         this.accountStore = accountStore;
     }
