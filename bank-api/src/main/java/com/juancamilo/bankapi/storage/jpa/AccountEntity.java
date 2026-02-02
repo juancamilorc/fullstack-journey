@@ -2,6 +2,9 @@ package com.juancamilo.bankapi.storage.jpa;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "accounts")
 public class AccountEntity {
@@ -28,6 +31,11 @@ public class AccountEntity {
         this.balanceAmount = balanceAmount;
         this.client = client;
     }
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<MovementEntity> movements = new java.util.ArrayList<>();
+
+    public java.util.List<MovementEntity> getMovements() { return movements; }
 
     public String getNumber() { return number; }
     public String getType() { return type; }

@@ -4,6 +4,8 @@ import com.juancamilo.bankapi.api.dto.AccountResponse;
 import com.juancamilo.bankapi.api.dto.MoneyRequest;
 import com.juancamilo.bankapi.storage.jpa.AccountEntity;
 import com.juancamilo.bankapi.storage.jpa.AccountRepository;
+import com.juancamilo.bankapi.storage.jpa.MovementEntity;
+import com.juancamilo.bankapi.storage.jpa.MovementRepository;
 import domain.exception.InsufficientFundsException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,9 +15,11 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
 
     private final AccountRepository accountRepo;
+    private final MovementRepository movementRepo;
 
-    public AccountController(AccountRepository accountRepo) {
+    public AccountController(AccountRepository accountRepo, MovementRepository movementRepo) {
         this.accountRepo = accountRepo;
+        this.movementRepo = movementRepo;
     }
 
     @PostMapping("/{number}/deposit")
@@ -30,6 +34,14 @@ public class AccountController {
 
         acc.setBalanceAmount(acc.getBalanceAmount() + amount);
         accountRepo.save(acc);
+
+        movementRepo.save(new MovementEntity(
+                java.time.Instant.now(),
+                "DEPOSITO",
+                amount,
+                acc.getBalanceAmount(),
+                acc
+        ));
 
         return ResponseEntity.ok(toResponse(acc));
     }
