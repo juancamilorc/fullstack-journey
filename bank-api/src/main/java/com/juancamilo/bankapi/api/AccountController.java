@@ -63,6 +63,14 @@ public class AccountController {
         acc.setBalanceAmount(acc.getBalanceAmount() - amount);
         accountRepo.save(acc);
 
+        movementRepo.save(new MovementEntity(
+                java.time.Instant.now(),
+                "RETIRO",
+                amount,
+                acc.getBalanceAmount(),
+                acc
+        ));
+
         return ResponseEntity.ok(toResponse(acc));
     }
 
