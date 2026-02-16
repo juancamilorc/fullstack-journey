@@ -1,7 +1,9 @@
 package com.juancamilo.bankapi.api.dto;
 
+import java.time.Instant;
+
 public record MovementResponse(
-        String occurredAt,
+        Instant occurredAt,
         String type,
         long amount,
         long resultingBalance

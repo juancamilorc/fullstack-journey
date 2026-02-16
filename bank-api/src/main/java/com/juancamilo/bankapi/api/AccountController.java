@@ -2,6 +2,7 @@ package com.juancamilo.bankapi.api;
 
 import com.juancamilo.bankapi.api.dto.AccountResponse;
 import com.juancamilo.bankapi.api.dto.MoneyRequest;
+import com.juancamilo.bankapi.api.dto.MovementResponse;
 import com.juancamilo.bankapi.storage.jpa.AccountEntity;
 import com.juancamilo.bankapi.storage.jpa.AccountRepository;
 import com.juancamilo.bankapi.storage.jpa.MovementEntity;
@@ -72,6 +73,27 @@ public class AccountController {
         ));
 
         return ResponseEntity.ok(toResponse(acc));
+    }
+
+    @GetMapping("/{number}/movements")
+    public ResponseEntity<?> movements(@PathVariable String number) {
+
+        if (!accountRepo.existsById(number)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var movements = movementRepo.findByAccount_NumberOrderByIdDesc(number);
+
+        var response = movements.stream()
+                .map(m -> new MovementResponse(
+                        m.getOccurredAt(),
+                        m.getType(),
+                        m.getAmount(),
+                        m.getResultingBalance()
+                ))
+                .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     private AccountResponse toResponse(AccountEntity acc) {
