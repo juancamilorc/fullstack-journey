@@ -1,33 +1,3 @@
-# Bank API (Spring Boot + JPA + H2)
-
-API simple de banco para practicar:
-- CRUD básico de clientes
-- Cuentas por cliente
-- Depósitos y retiros
-- Registro de movimientos (DEPOSITO / RETIRO)
-- Manejo global de errores (JSON uniforme)
-
-## Stack
-- Java 17+
-- Spring Boot 4
-- Spring Web
-- Spring Data JPA
-- H2 (in-memory)
-- Maven (wrapper)
-
----
-
-## Cómo ejecutar
-
-### Opción A: Desde IntelliJ
-Run -> `BankApiApplication`
-
-### Opción B: Terminal
-```bash
-cd bank-api
-./mvnw spring-boot:run
-
-
 # 🏦 Bank API
 
 API REST desarrollada con Spring Boot para la gestión de clientes, cuentas bancarias y movimientos (depósitos y retiros).
@@ -36,50 +6,74 @@ Proyecto creado como práctica de arquitectura backend con persistencia real usa
 
 ---
 
-## 🚀 Tecnologías utilizadas
+## 🚀 Stack Tecnológico
 
-- Java 17
+- Java 17+
 - Spring Boot 4
 - Spring Web
 - Spring Data JPA
-- H2 Database
-- Maven
+- H2 (in-memory database)
+- Maven (wrapper incluido)
 
 ---
 
 ## 🧱 Arquitectura
 
-El proyecto sigue una estructura en capas:
+El proyecto está organizado en capas:
 
-api → Controllers + DTOs  
-storage.jpa → Entidades JPA + Repositories  
-domain-core → Reglas de negocio  
+- `api` → Controllers + DTOs
+- `storage.jpa` → Entidades JPA + Repositories
+- `domain-core` → Reglas de negocio
 
-Buenas prácticas implementadas:
+Buenas prácticas aplicadas:
 
-- Separación de responsabilidades  
-- DTOs para respuestas  
-- Manejo global de excepciones  
-- Persistencia real con base de datos  
-- Relaciones @OneToMany y @ManyToOne  
-- Ordenamiento en consultas  
-- Validaciones básicas de negocio  
+- Separación de responsabilidades
+- DTOs para respuestas
+- Manejo global de excepciones (JSON uniforme)
+- Persistencia real con JPA
+- Relaciones `@OneToMany` y `@ManyToOne`
+- Ordenamiento en consultas
+- Validaciones básicas de negocio
 
 ---
 
-## 🗄️ Base de datos
+## ▶️ Cómo ejecutar el proyecto
+
+### Opción A — Desde IntelliJ
+
+Run → `BankApiApplication`
+
+### Opción B — Desde terminal
+
+```bash
+cd bank-api
+./mvnw spring-boot:run
+```
+
+O generar el JAR:
+
+```bash
+./mvnw clean package
+java -jar target/bank-api-0.0.1-SNAPSHOT.jar
+```
+
+---
+
+## 🗄️ Base de datos (H2)
 
 Se utiliza H2 en memoria.
 
-Acceso a consola H2:
+Acceso a la consola:
 
+```
 http://localhost:8080/h2-console
+```
 
 Configuración típica:
 
-JDBC URL: jdbc:h2:mem:testdb  
-User: sa  
-Password: (vacío)  
+- JDBC URL: `jdbc:h2:mem:testdb`
+- User: `sa`
+- Password: (vacío)
 
 ---
 
@@ -87,7 +81,7 @@ Password: (vacío)
 
 ### 👤 Crear cliente
 
-POST /api/v1/clients
+POST `/api/v1/clients`
 
 ```json
 {
@@ -97,13 +91,13 @@ POST /api/v1/clients
 }
 ```
 
-Status: 201 Created
+Status: `201 Created`
 
 ---
 
-### Crear cuenta
+### 💳 Crear cuenta
 
-POST /api/v1/clients/{clientId}/accounts
+POST `/api/v1/clients/{clientId}/accounts`
 
 ```json
 {
@@ -112,13 +106,13 @@ POST /api/v1/clients/{clientId}/accounts
 }
 ```
 
-Status: 201 Created
+Status: `201 Created`
 
 ---
 
-### Depositar dinero
+### 💰 Depositar dinero
 
-POST /api/v1/accounts/{number}/deposit
+POST `/api/v1/accounts/{number}/deposit`
 
 ```json
 {
@@ -126,13 +120,13 @@ POST /api/v1/accounts/{number}/deposit
 }
 ```
 
-Status: 200 OK
+Status: `200 OK`
 
 ---
 
-### Retirar dinero
+### 💸 Retirar dinero
 
-POST /api/v1/accounts/{number}/withdraw
+POST `/api/v1/accounts/{number}/withdraw`
 
 ```json
 {
@@ -149,15 +143,15 @@ Si el saldo es insuficiente:
 }
 ```
 
-Status: 409 Conflict
+Status: `409 Conflict`
 
 ---
 
-### Listar movimientos
+### 📜 Listar movimientos
 
-GET /api/v1/accounts/{number}/movements
+GET `/api/v1/accounts/{number}/movements`
 
-Respuesta:
+Ejemplo de respuesta:
 
 ```json
 [
@@ -180,24 +174,7 @@ Los movimientos se devuelven ordenados del más reciente al más antiguo.
 
 ---
 
-## Cómo ejecutar el proyecto
-
-Desde la carpeta bank-api:
-
-```bash
-./mvnw spring-boot:run
-```
-
-O:
-
-```bash
-./mvnw clean package
-java -jar target/bank-api-0.0.1-SNAPSHOT.jar
-```
-
----
-
-## Ejecutar pruebas
+## 🧪 Ejecutar pruebas
 
 ```bash
 ./mvnw clean test
@@ -205,29 +182,29 @@ java -jar target/bank-api-0.0.1-SNAPSHOT.jar
 
 ---
 
-## Objetivos del proyecto
+## 🎯 Objetivo del proyecto
 
 - Practicar arquitectura backend limpia
-- Implementar persistencia con JPA
+- Implementar persistencia real con JPA
 - Manejar relaciones entre entidades
 - Aplicar manejo global de excepciones
 - Construir una API REST funcional end-to-end
 
 ---
 
-## Próximas mejoras
+## 📈 Próximas mejoras
 
 - Implementar seguridad con JWT
 - Agregar Docker
 - Migrar a PostgreSQL
 - Implementar paginación
 - Agregar Swagger / OpenAPI
-- Integrar frontend en Angular o React
+- Integrar frontend (Angular / React)
 - Agregar validaciones con Bean Validation
 
 ---
 
-## Autor
+## 👨‍💻 Autor
 
 Juan Camilo Ramírez  
 Proyecto de práctica backend — 2026
