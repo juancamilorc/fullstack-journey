@@ -1,4 +1,4 @@
-# 🏦 Bank API
+# Bank API
 
 API REST desarrollada con Spring Boot para la gestión de clientes, cuentas bancarias y movimientos (depósitos y retiros).
 
@@ -6,7 +6,7 @@ Proyecto creado como práctica de arquitectura backend con persistencia real usa
 
 ---
 
-## 🚀 Stack Tecnológico
+## Stack tecnológico
 
 - Java 17+
 - Spring Boot 4
@@ -17,33 +17,33 @@ Proyecto creado como práctica de arquitectura backend con persistencia real usa
 
 ---
 
-## 🧱 Arquitectura
+## Arquitectura
 
 El proyecto está organizado en capas:
 
-- `api` → Controllers + DTOs
-- `storage.jpa` → Entidades JPA + Repositories
-- `domain-core` → Reglas de negocio
+- api → Controllers y DTOs
+- storage.jpa → Entidades JPA y Repositories
+- domain-core → Reglas de negocio
 
 Buenas prácticas aplicadas:
 
 - Separación de responsabilidades
-- DTOs para respuestas
-- Manejo global de excepciones (JSON uniforme)
+- Uso de DTOs para respuestas
+- Manejo global de excepciones con formato JSON uniforme
 - Persistencia real con JPA
-- Relaciones `@OneToMany` y `@ManyToOne`
+- Relaciones @OneToMany y @ManyToOne
 - Ordenamiento en consultas
 - Validaciones básicas de negocio
 
 ---
 
-## ▶️ Cómo ejecutar el proyecto
+## Cómo ejecutar el proyecto
 
-### Opción A — Desde IntelliJ
+### Desde IntelliJ
 
-Run → `BankApiApplication`
+Ejecutar la clase `BankApiApplication`.
 
-### Opción B — Desde terminal
+### Desde terminal
 
 ```bash
 cd bank-api
@@ -59,29 +59,27 @@ java -jar target/bank-api-0.0.1-SNAPSHOT.jar
 
 ---
 
-## 🗄️ Base de datos (H2)
+## Base de datos (H2)
 
 Se utiliza H2 en memoria.
 
 Acceso a la consola:
 
-```
 http://localhost:8080/h2-console
-```
 
 Configuración típica:
 
-- JDBC URL: `jdbc:h2:mem:testdb`
-- User: `sa`
+- JDBC URL: jdbc:h2:mem:testdb
+- User: sa
 - Password: (vacío)
 
 ---
 
-## 📌 Endpoints principales
+## Endpoints principales
 
-### 👤 Crear cliente
+### Crear cliente
 
-POST `/api/v1/clients`
+POST /api/v1/clients
 
 ```json
 {
@@ -91,13 +89,13 @@ POST `/api/v1/clients`
 }
 ```
 
-Status: `201 Created`
+Status: 201 Created
 
 ---
 
-### 💳 Crear cuenta
+### Crear cuenta
 
-POST `/api/v1/clients/{clientId}/accounts`
+POST /api/v1/clients/{clientId}/accounts
 
 ```json
 {
@@ -106,13 +104,13 @@ POST `/api/v1/clients/{clientId}/accounts`
 }
 ```
 
-Status: `201 Created`
+Status: 201 Created
 
 ---
 
-### 💰 Depositar dinero
+### Depositar dinero
 
-POST `/api/v1/accounts/{number}/deposit`
+POST /api/v1/accounts/{number}/deposit
 
 ```json
 {
@@ -120,13 +118,13 @@ POST `/api/v1/accounts/{number}/deposit`
 }
 ```
 
-Status: `200 OK`
+Status: 200 OK
 
 ---
 
-### 💸 Retirar dinero
+### Retirar dinero
 
-POST `/api/v1/accounts/{number}/withdraw`
+POST /api/v1/accounts/{number}/withdraw
 
 ```json
 {
@@ -143,13 +141,13 @@ Si el saldo es insuficiente:
 }
 ```
 
-Status: `409 Conflict`
+Status: 409 Conflict
 
 ---
 
-### 📜 Listar movimientos
+### Listar movimientos
 
-GET `/api/v1/accounts/{number}/movements`
+GET /api/v1/accounts/{number}/movements
 
 Ejemplo de respuesta:
 
@@ -174,7 +172,7 @@ Los movimientos se devuelven ordenados del más reciente al más antiguo.
 
 ---
 
-## 🧪 Ejecutar pruebas
+## Ejecutar pruebas
 
 ```bash
 ./mvnw clean test
@@ -182,29 +180,19 @@ Los movimientos se devuelven ordenados del más reciente al más antiguo.
 
 ---
 
-## 🎯 Objetivo del proyecto
-
-- Practicar arquitectura backend limpia
-- Implementar persistencia real con JPA
-- Manejar relaciones entre entidades
-- Aplicar manejo global de excepciones
-- Construir una API REST funcional end-to-end
-
----
-
-## 📈 Próximas mejoras
+## Próximas mejoras
 
 - Implementar seguridad con JWT
 - Agregar Docker
 - Migrar a PostgreSQL
 - Implementar paginación
-- Agregar Swagger / OpenAPI
+- Agregar documentación OpenAPI
 - Integrar frontend (Angular / React)
 - Agregar validaciones con Bean Validation
 
 ---
 
-## 👨‍💻 Autor
+## Autor
 
 Juan Camilo Ramírez  
 Proyecto de práctica backend — 2026
